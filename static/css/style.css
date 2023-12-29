@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+nav {
+    background: #333; /* Replace with a gradient or solid color as desired */
+    border-radius: 30px; /* Soft rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Subtle drop shadow */
+    padding: 10px 30px;
+    display: flex;
+    justify-content: space-between; /* Spacing out navigation items */
+    align-items: center;
+    max-width: 800px; /* Adjust as necessary */
+    margin: 0 auto;
+}
+
+nav a {
+    font-family: 'Inter', sans-serif;
+    color: #fff; /* Light text for contrast */
+    text-decoration: none;
+    font-size: 16px; /* Adjust as necessary */
+    padding: 8px 16px;
+    border-radius: 15px; /* Rounded corners for links */
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+}
+
+nav a:hover, nav a:focus {
+    background-color: rgba(255, 255, 255, 0.2); /* Slight background on hover */
+    color: #ddd; /* Optional: change color on hover */
+}
+
+.logo {
+    font-size: 24px; /* Adjust as necessary */
+    /* additional styling for the logo */
+}
+
+/* Additional styles for active or highlighted navigation items */
+nav a.active {
+    background-color: rgba(255, 255, 255, 0.4);
+    color: #fff;
+}
