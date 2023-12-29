@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mojo GM Cup Generator</title>
+    <!-- Replace with the actual link to the Satoshi font once it is available on Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Satoshi:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Satoshi', sans-serif; /* Satoshi font applied */
+            background-color: #1c1b1b;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 768px;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+        }
+
+        h1 {
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        input[type="radio"],
+        input[type="file"],
+        select,
+        button {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background: #2c2c2e;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #007aff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-weight: 500;
+            /* Set a specific width or max-width for the button */
+            width: auto; /* Adjust the width as necessary, or use 'auto' for content-based sizing */
+            max-width: 200px; /* Example max-width, adjust as needed */
+            /* Center the button text */
+            text-align: center;
+            display: block; /* Block display to allow width and margin to take effect */
+            margin: 0 auto; /* Centers the button in its container */
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="file"]::file-selector-button {
+            background-color: #007aff;
+            color: white;
+            border-radius: 10px;
+            padding: 10px;
+            margin-right: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="file"]::file-selector-button:hover {
+            background-color: #0056b3;
+        }
+
+        input[type="radio"] {
+            accent-color: #007aff;
+        }
+
+        select {
+            appearance: none;
+            background: #2c2c2e;
+            color: white;
+            cursor: pointer;
+        }
+
+        nav {
+            background: #333;
+            border-radius: 30px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+            padding: 10px 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+            padding: 8px 16px;
+            border-radius: 10px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        nav a:hover, nav a:focus {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            color: white;
+            margin-right: 20px;
+        }
+
+        .nav-item:last-child {
+            margin-right: 0;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="#portfolio" class="nav-item">Mojo GM Cup Generator</a>
+    </nav>
+
+    <div class="container">
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-section">
+                <label>Type of your Mojo NFT:</label>
+                <input type="radio" id="human" name="creature" value="human" checked>
+                <label for="human">Human</label>
+                <input type="radio" id="demon" name="creature" value="demon">
+                <label for="demon">Demon</label>
+                <input type="radio" id="spirit" name="creature" value="spirit">
+                <label for="spirit">Spirit</label>
+            </div>
+            <div class="form-section">
+                <label for="skin-tone">Skin tone:</label>
+                <select name="skin_tone" id="skin-tone">
+                    <option value="1">Tone 1</option>
+                    <option value="2">Tone 2</option>
+                    <option value="3">Tone 3</option>
+                </select>
+            </div>
+            <div class="form-section">
+                <label>Gender:</label>
+                <input type="radio" id="boy" name="gender" value="boy" checked>
+                <label for="boy">Boy</label>
+                <input type="radio" id="girl" name="gender" value="girl">
+                <label for="girl">Girl</label>
+            </div>
+            <div class="form-section">
+                <label for="nft-upload">Upload your NFT:</label>
+                <input type="file" id="nft-upload" name="nft_image" required>
+            </div>
+            <button type="submit">Generate</button>
+        </form>
+    </div>
+</body>
+</html>
