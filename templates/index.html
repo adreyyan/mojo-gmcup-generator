@@ -1,183 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Mojo GM Cup Generator</title>
-    <!-- Replace with the actual link to the Satoshi font once it is available on Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Satoshi:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Satoshi', sans-serif; /* Satoshi font applied */
-            background-color: #1c1b1b;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            color: white;
-        }
+from flask import Flask, render_template, request, send_from_directory
+import os
+from werkzeug.utils import secure_filename
+from image_processing.processor import add_gm_cup
 
-        .container {
-            width: 100%;
-            max-width: 768px;
-            padding: 40px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
-        }
+app = Flask(__name__, template_folder='docs')  # Set the template folder to 'docs'
 
-        h1 {
-            font-size: 32px;
-            text-align: center;
-            margin-bottom: 30px;
-        }
+UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'nft_uploads')
+PROCESSED_FOLDER = os.path.join(app.root_path, 'static', 'nft_processed')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-        form {
-            display: flex;
-            flex-direction: column;
-        }
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(PROCESSED_FOLDER, exist_ok=True)
 
-        .form-section {
-            margin-bottom: 20px;
-        }
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
-        label {
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-        input[type="radio"],
-        input[type="file"],
-        select,
-        button {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            background: #2c2c2e;
-            color: white;
-            margin-bottom: 10px;
-        }
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        file = request.files['nft_image']
+        creature = request.form['creature']
+        gender = request.form['gender']
+        skin_tone = request.form.get('skin_tone', '1')  # Default to '1' if not provided
 
-        button {
-            background-color: #007aff;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-weight: 500;
-            /* Set a specific width or max-width for the button */
-            width: auto; /* Adjust the width as necessary, or use 'auto' for content-based sizing */
-            max-width: 200px; /* Example max-width, adjust as needed */
-            /* Center the button text */
-            text-align: center;
-            display: block; /* Block display to allow width and margin to take effect */
-            margin: 0 auto; /* Centers the button in its container */
-        }
+        if not file or file.filename == '':
+            return 'No selected file', 400
 
-        button:hover {
-            background-color: #0056b3;
-        }
+        if allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(UPLOAD_FOLDER, filename)
+            file.save(file_path)
 
-        input[type="file"]::file-selector-button {
-            background-color: #007aff;
-            color: white;
-            border-radius: 10px;
-            padding: 10px;
-            margin-right: 10px;
-            transition: background-color 0.3s ease;
-        }
+            if creature == 'human':
+                gm_cup_filename = f"{gender}_tone{skin_tone}.png"
+                gm_cup_folder = os.path.join(creature, gender)
+            else:
+                # For 'demon' and 'spirit', use only the tone1.png without gender in the filename
+                gm_cup_filename = f"{gender}_tone1.png"
+                gm_cup_folder = creature
+            
+            gm_cup_path = os.path.join(app.root_path, 'static', 'assets', 'gm_cups', gm_cup_folder, gm_cup_filename)
 
-        input[type="file"]::file-selector-button:hover {
-            background-color: #0056b3;
-        }
+            result_image_path = add_gm_cup(file_path, gm_cup_path, PROCESSED_FOLDER)
 
-        input[type="radio"] {
-            accent-color: #007aff;
-        }
+            return send_from_directory(PROCESSED_FOLDER, os.path.basename(result_image_path))
 
-        select {
-            appearance: none;
-            background: #2c2c2e;
-            color: white;
-            cursor: pointer;
-        }
+    return render_template('index.html')
 
-        nav {
-            background: #333;
-            border-radius: 30px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
-            padding: 10px 30px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        nav a {
-            text-decoration: none;
-            color: white;
-            font-size: 16px;
-            letter-spacing: 0.5px;
-            padding: 8px 16px;
-            border-radius: 10px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        nav a:hover, nav a:focus {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .logo {
-            font-size: 24px;
-            color: white;
-            margin-right: 20px;
-        }
-
-        .nav-item:last-child {
-            margin-right: 0;
-        }
-    </style>
-</head>
-<body>
-    <nav>
-        <a href="#portfolio" class="nav-item">Mojo GM Cup Generator</a>
-    </nav>
-
-    <div class="container">
-        <form method="post" enctype="multipart/form-data">
-            <div class="form-section">
-                <label>Type of your Mojo NFT:</label>
-                <input type="radio" id="human" name="creature" value="human" checked>
-                <label for="human">Human</label>
-                <input type="radio" id="demon" name="creature" value="demon">
-                <label for="demon">Demon</label>
-                <input type="radio" id="spirit" name="creature" value="spirit">
-                <label for="spirit">Spirit</label>
-            </div>
-            <div class="form-section">
-                <label for="skin-tone">Skin tone:</label>
-                <select name="skin_tone" id="skin-tone">
-                    <option value="1">Tone 1</option>
-                    <option value="2">Tone 2</option>
-                    <option value="3">Tone 3</option>
-                </select>
-            </div>
-            <div class="form-section">
-                <label>Gender:</label>
-                <input type="radio" id="boy" name="gender" value="boy" checked>
-                <label for="boy">Boy</label>
-                <input type="radio" id="girl" name="gender" value="girl">
-                <label for="girl">Girl</label>
-            </div>
-            <div class="form-section">
-                <label for="nft-upload">Upload your NFT:</label>
-                <input type="file" id="nft-upload" name="nft_image" required>
-            </div>
-            <button type="submit">Generate</button>
-        </form>
-    </div>
-</body>
-</html>
+if __name__ == '__main__':
+    app.run(debug=True)
