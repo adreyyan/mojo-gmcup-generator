@@ -95,11 +95,10 @@
             accent-color: #007aff;
         }
 
-        select {
-            appearance: none;
+        select[disabled] {
             background: #2c2c2e;
             color: white;
-            cursor: pointer;
+            cursor: not-allowed;
         }
 
         nav {
@@ -179,5 +178,19 @@
             <button type="submit">Generate</button>
         </form>
     </div>
+    <script>
+        const creatureRadio = document.getElementsByName("creature");
+        const skinToneSelect = document.getElementById("skin-tone");
+
+        for (const radio of creatureRadio) {
+            radio.addEventListener("change", () => {
+                if (radio.value === "spirit" || radio.value === "demon") {
+                    skinToneSelect.disabled = true;
+                } else {
+                    skinToneSelect.disabled = false;
+                }
+            });
+        }
+    </script>
 </body>
 </html>
